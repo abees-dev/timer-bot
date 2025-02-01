@@ -8,11 +8,13 @@ import {
 } from 'discord-interactions';
 import { createTimerCommand } from './commands/timer';
 
+console.log(process.env.CLIENT_PUBLIC_KEY);
+
 const bootstrap = async () => {
   const app = express();
   const port = 3000;
-  app.use(cors());
 
+  app.use(cors());
   app.use((req, res, next) => {
     if (req.path === '/interactions') {
       next(); // Skip middleware for interactions
@@ -33,19 +35,23 @@ const bootstrap = async () => {
     res.render('privacy', { title: 'Privacy Policy' });
   });
 
-  app.post('/interactions', (req, res) => {
-    const { type, id, data } = req.body;
-    console.log('Received interaction', req.body);
+  app.post(
+    '/interactions',
+    verifyKeyMiddleware(process.env.CLIENT_PUBLIC_KEY),
+    (req, res) => {
+      const { type, id, data } = req.body;
+      console.log('Received interaction', req.body);
 
-    /**
-     * Handle verification requests
-     */
-    if (type === InteractionType.PING) {
+      /**
+       * Handle verification requests
+       */
+      if (type === InteractionType.PING) {
+        res.send({ type: InteractionResponseType.PONG });
+      }
+
       res.send({ type: InteractionResponseType.PONG });
-    }
-
-    res.send({ type: InteractionResponseType.PONG });
-  });
+    },
+  );
 
   app.listen(port, () => {
     console.log(`Server is running on http://localhost:${port}`);
