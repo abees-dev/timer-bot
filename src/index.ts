@@ -22,11 +22,6 @@ const bootstrap = async () => {
     res.status(200).json({ message: 'Hello World!' });
   });
 
-  app.listen(port, () => {
-    console.log(`Server is running on http://localhost:${port}`);
-    createTimerCommand(process.env.APP_ID);
-  });
-
   app.get('/terms-of-service', (req, res) => {
     res.render('terms', { title: 'Terms of Service' });
   });
@@ -40,6 +35,7 @@ const bootstrap = async () => {
     verifyKeyMiddleware(process.env.CLIENT_PUBLIC_KEY),
     (req, res) => {
       const { type, id, data } = req.body;
+      console.log('Received interaction', req.body);
 
       /**
        * Handle verification requests
@@ -48,11 +44,14 @@ const bootstrap = async () => {
         res.send({ type: InteractionResponseType.PONG });
       }
 
-      console.log('Received interaction', req.body);
-
       res.send({ type: InteractionResponseType.PONG });
     },
   );
+
+  app.listen(port, () => {
+    console.log(`Server is running on http://localhost:${port}`);
+    createTimerCommand(process.env.APP_ID);
+  });
 };
 
 void bootstrap();
