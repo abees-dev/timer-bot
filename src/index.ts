@@ -40,13 +40,12 @@ const bootstrap = async () => {
     verifyKeyMiddleware(process.env.CLIENT_PUBLIC_KEY),
     (req, res) => {
       const { type, id, data } = req.body;
-      console.log('Received interaction', req.body);
+      console.log('Received interaction', JSON.stringify(req.body, null, 2));
 
-      res.send({
+      res.status(200).json({
         type: InteractionResponseType.CHANNEL_MESSAGE_WITH_SOURCE,
         data: { content: 'A wild message appeared' },
       });
-      res.end();
     },
   );
 
