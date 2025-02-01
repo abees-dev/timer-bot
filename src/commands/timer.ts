@@ -7,22 +7,24 @@ export const createTimerCommand = async (appId: string) => {
     description: 'Create a boss timer',
     options: [
       {
-        name: 'golem',
-        description: 'Set a timer for the Golem boss',
+        name: 'boss_name',
+        description: 'Choose a boss to set a timer for',
         type: 3,
         required: true,
-      },
-      {
-        name: 'ender_dragon',
-        description: 'Set a timer for the Ender Dragon boss',
-        type: 3,
-        required: true,
-      },
-      {
-        name: 'gorgon',
-        description: 'Set a timer for the Gorgon boss',
-        type: 3,
-        required: true,
+        choices: [
+          {
+            name: 'Golem',
+            value: 'golem',
+          },
+          {
+            name: 'Ender Dragon',
+            value: 'ender_dragon',
+          },
+          {
+            name: 'Gorgon',
+            value: 'gorgon',
+          },
+        ],
       },
     ],
   };
