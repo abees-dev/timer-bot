@@ -58,23 +58,40 @@ const bootstrap = async () => {
   app.post(
     '/interactions',
     verifyKeyMiddleware(process.env.CLIENT_PUBLIC_KEY),
-    (req, res) => {
+    async (req, res) => {
       const { type, id, data, channel_id } = req.body;
       console.log('Received interaction', JSON.stringify(data, null, 2));
 
-      const bossService = TimerBossService.getInstance();
-
+      // Get the 'boss' interaction
       if (data.name === 'boss') {
-        const channelCache = discordClient.channels.cache.get(channel_id);
+        // Fetch the channel if it's not cached
+        let channel;
+        try {
+          channel = await discordClient.channels.fetch(channel_id);
+        } catch (err) {
+          console.error('Error fetching channel:', err);
+          res.status(500).json({
+            error: 'Failed to fetch the channel',
+          });
+          return;
+        }
 
-        countdownTimer(channelCache, 10);
+        // Start the countdown
+        countdownTimer(channel, 10); // Start 10-second countdown
+
+        const bossService = TimerBossService.getInstance();
         bossService.createTimerBoss(data, '1234');
-      }
 
-      res.status(200).json({
-        type: InteractionResponseType.CHANNEL_MESSAGE_WITH_SOURCE,
-        data: { content: 'A wild message appeared' },
-      });
+        res.status(200).json({
+          type: InteractionResponseType.CHANNEL_MESSAGE_WITH_SOURCE,
+          data: { content: 'A wild boss has appeared! Starting countdown...' },
+        });
+      } else {
+        // If the interaction doesn't match the expected name
+        res.status(400).json({
+          error: 'Unknown interaction type',
+        });
+      }
     },
   );
 
