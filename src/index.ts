@@ -42,14 +42,11 @@ const bootstrap = async () => {
       const { type, id, data } = req.body;
       console.log('Received interaction', req.body);
 
-      /**
-       * Handle verification requests
-       */
-      if (type === InteractionType.PING) {
-        res.send({ type: InteractionResponseType.PONG });
-      }
-
-      res.send({ type: InteractionResponseType.PONG });
+      res.send({
+        type: InteractionResponseType.CHANNEL_MESSAGE_WITH_SOURCE,
+        data: { content: 'A wild message appeared' },
+      });
+      res.end();
     },
   );
 
