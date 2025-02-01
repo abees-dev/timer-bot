@@ -16,13 +16,21 @@ const bootstrap = async () => {
   app.use(express.urlencoded({ extended: true }));
   app.use(cors());
   app.use(express.json());
-
+  app.set('view engine', 'ejs');
   app.get('/', (req, res) => {
     res.status(200).json({ message: 'Hello World!' });
   });
 
   app.listen(port, () => {
     console.log(`Server is running on http://localhost:${port}`);
+  });
+
+  app.get('/terms-of-service', (req, res) => {
+    res.render('terms', { title: 'Terms of Service' });
+  });
+
+  app.get('/privacy-policy', (req, res) => {
+    res.render('privacy', { title: 'Privacy Policy' });
   });
 
   app.post(
