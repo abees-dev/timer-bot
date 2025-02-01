@@ -6,6 +6,7 @@ import {
   InteractionType,
   verifyKeyMiddleware,
 } from 'discord-interactions';
+import { createTimerCommand } from './commands/timer';
 
 console.log(process.env.CLIENT_PUBLIC_KEY);
 
@@ -23,6 +24,7 @@ const bootstrap = async () => {
 
   app.listen(port, () => {
     console.log(`Server is running on http://localhost:${port}`);
+    createTimerCommand(process.env.APP_ID);
   });
 
   app.get('/terms-of-service', (req, res) => {
@@ -45,6 +47,10 @@ const bootstrap = async () => {
       if (type === InteractionType.PING) {
         res.send({ type: InteractionResponseType.PONG });
       }
+
+      console.log('Received interaction', req.body);
+
+      res.send({ type: InteractionResponseType.PONG });
     },
   );
 };
