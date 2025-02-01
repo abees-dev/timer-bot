@@ -40,7 +40,7 @@ const bootstrap = async () => {
     verifyKeyMiddleware(process.env.CLIENT_PUBLIC_KEY),
     (req, res) => {
       const { type, id, data } = req.body;
-      console.log('Received interaction', JSON.stringify(req.body, null, 2));
+      console.log('Received interaction', JSON.stringify(data, null, 2));
 
       res.status(200).json({
         type: InteractionResponseType.CHANNEL_MESSAGE_WITH_SOURCE,

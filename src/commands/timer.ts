@@ -26,6 +26,12 @@ export const createTimerCommand = async (appId: string) => {
           },
         ],
       },
+      {
+        name: 'duration',
+        description: 'Set the duration for the timer (in minutes)',
+        type: 4,
+        required: false,
+      },
     ],
   };
 
