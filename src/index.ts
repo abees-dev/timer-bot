@@ -7,8 +7,28 @@ import {
   verifyKeyMiddleware,
 } from 'discord-interactions';
 import { createTimerCommand } from './commands/timer';
+import { TimerBossService } from './services/boss.service';
+import { Client } from 'discord.js';
 
 console.log(process.env.CLIENT_PUBLIC_KEY);
+
+const discordClient = new Client({
+  intents: [],
+});
+discordClient.login(process.env.DISCORD_TOKEN);
+
+async function countdownTimer(channel: any, seconds: any) {
+  let message = await channel.send(
+    `⏳ Countdown: ${seconds} seconds remaining...`,
+  );
+
+  for (let i = seconds; i > 0; i--) {
+    await new Promise((resolve) => setTimeout(resolve, 1000)); // Wait 1 second
+    await message.edit(`⏳ Countdown: ${i} seconds remaining...`);
+  }
+
+  await message.edit("🚀 Time's up!");
+}
 
 const bootstrap = async () => {
   const app = express();
@@ -39,8 +59,17 @@ const bootstrap = async () => {
     '/interactions',
     verifyKeyMiddleware(process.env.CLIENT_PUBLIC_KEY),
     (req, res) => {
-      const { type, id, data } = req.body;
+      const { type, id, data, channel_id } = req.body;
       console.log('Received interaction', JSON.stringify(data, null, 2));
+
+      const bossService = TimerBossService.getInstance();
+
+      if (data.name === 'boss') {
+        const channelCache = discordClient.channels.cache.get(channel_id);
+
+        countdownTimer(channelCache, 10);
+        bossService.createTimerBoss(data, '1234');
+      }
 
       res.status(200).json({
         type: InteractionResponseType.CHANNEL_MESSAGE_WITH_SOURCE,
