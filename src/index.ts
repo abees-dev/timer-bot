@@ -57,7 +57,7 @@ const bootstrap = async () => {
 
   app.post(
     '/interactions',
-    verifyKeyMiddleware(process.env.CLIENT_PUBLIC_KEY),
+    verifyKeyMiddleware(process.env.CLIENT_PUBLIC_KEY as string),
     async (req, res) => {
       const { type, id, data, channel_id } = req.body;
       console.log('Received interaction', JSON.stringify(data, null, 2));
@@ -97,7 +97,7 @@ const bootstrap = async () => {
 
   app.listen(port, () => {
     console.log(`Server is running on http://localhost:${port}`);
-    createTimerCommand(process.env.APP_ID);
+    createTimerCommand(process.env.APP_ID as string);
   });
 };
 
