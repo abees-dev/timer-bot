@@ -77,6 +77,7 @@ export class TimerBossService {
 
     const updateMessage = async () => {
       const content = `⏳ Countdown: ${remainingTime} seconds remaining...`;
+      console.log('channel', channel);
       if (message) {
         await message.edit(content);
       } else {
@@ -87,6 +88,7 @@ export class TimerBossService {
     const intervalId = setInterval(async () => {
       if (remainingTime > 0) {
         await updateMessage();
+        console.log('channel', channel);
         remainingTime--;
       } else {
         clearInterval(intervalId);
