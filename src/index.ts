@@ -17,14 +17,13 @@ const discordClient = new Client({
 });
 discordClient.login(process.env.DISCORD_TOKEN);
 
-async function countdownTimer(channel: any, seconds: any) {
+async function countdownTimer(channel: any, duration: any) {
+  const durationInSeconds = duration * 60; // Convert duration to seconds
   let message = await channel.send(
-    `⏳ Countdown: ${seconds} seconds remaining...`,
+    `⏳ Countdown: ${durationInSeconds} seconds remaining...`,
   );
 
-  console.log(channel);
-
-  for (let i = seconds; i > 0; i--) {
+  for (let i = durationInSeconds; i > 0; i--) {
     await new Promise((resolve) => setTimeout(resolve, 1000)); // Wait 1 second
     await message.edit(`⏳ Countdown: ${i} seconds remaining...`);
   }
@@ -84,7 +83,7 @@ const bootstrap = async () => {
         const bossService = TimerBossService.getInstance();
         const timerBoss = await bossService.createTimerBoss(data, channel_id);
 
-        countdownTimer(channel, timerBoss.duration); // Start 10-second countdown
+        bossService.countDownBossTimers(channel, timerBoss.duration);
 
         res.status(200).json({
           type: InteractionResponseType.CHANNEL_MESSAGE_WITH_SOURCE,

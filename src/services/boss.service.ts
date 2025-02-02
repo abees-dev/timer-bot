@@ -5,9 +5,9 @@ interface BossTimer {
 }
 
 const bossRespawnTimes = {
-  golem: 6 * 60 * 60 * 1000,
-  ender_dragon: 6 * 60 * 60 * 1000,
-  gorgon: 1 * 60 * 60 * 1000,
+  golem: 60 * 60, // 60 minutes in seconds
+  ender_dragon: 60 * 60 * 6, // 6 hours in seconds
+  gorgon: 60 * 60, // 60 minutes in seconds
 };
 
 export interface Command {
@@ -69,5 +69,20 @@ export class TimerBossService {
 
   async getBossTimers(): Promise<BossTimer[]> {
     return this.bossTimers;
+  }
+
+  async countDownBossTimers(channel: any, duration: any) {
+    let remainingTime = duration;
+    const intervalId = setInterval(async () => {
+      if (remainingTime > 0) {
+        await channel.send(
+          `⏳ Countdown: ${remainingTime} seconds remaining...`,
+        );
+        remainingTime--;
+      } else {
+        clearInterval(intervalId);
+        await channel.send("🚀 Time's up!");
+      }
+    }, 1000);
   }
 }
