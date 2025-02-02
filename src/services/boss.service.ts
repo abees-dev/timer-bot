@@ -73,9 +73,14 @@ export class TimerBossService {
     return this.bossTimers;
   }
 
-  async countDownBossTimers(channel: any, duration: number, bossName: string) {
+  async countDownBossTimers(channel: any, duration: number, bossName: any) {
     let remainingTime = duration;
     let message: any = null;
+    const mappedBossName: Record<string, string> = {
+      golem: 'Golem',
+      ender_dragon: 'Ender Dragon',
+      gorgon: 'Gorgon',
+    };
 
     const updateMessage = async () => {
       const hours = Math.floor(remainingTime / 3600);
@@ -86,7 +91,7 @@ export class TimerBossService {
         .padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
 
       const embed = new EmbedBuilder()
-        .setTitle(`⏳ Boss ${bossName} Respawn Timer`)
+        .setTitle(`⏳ Boss ${mappedBossName[bossName]} Respawn Timer`)
         .setDescription(`Time remaining: **${formattedTime}**`)
         .setColor(0x00ff00);
 
@@ -100,18 +105,24 @@ export class TimerBossService {
           embeds: [embed],
         });
       }
+
+      return message;
     };
 
     const intervalId = setInterval(async () => {
+      let message: any = null;
       if (remainingTime > 0) {
-        await updateMessage();
+        message = await updateMessage();
         console.log('channel', channel);
         remainingTime--;
       } else {
         clearInterval(intervalId);
+        if (message) {
+          message.delete();
+        }
         const embed = new EmbedBuilder()
-          .setTitle(`⏳ Boss ${bossName} Respawn Timer`)
-          .setDescription(`Boss ${bossName} has respawned! 🎉`)
+          .setTitle(`⏳ Boss ${mappedBossName[bossName]} Respawn Timer`)
+          .setDescription(`Boss ${mappedBossName[bossName]} has respawned! 🎉`)
           .setColor(0xff0000);
         await channel.send({ embeds: [embed] });
       }
