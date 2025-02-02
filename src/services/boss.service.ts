@@ -95,7 +95,7 @@ export class TimerBossService {
         .setDescription(`Time remaining: **${formattedTime}**`)
         .setColor(0x00ff00);
 
-      console.log('channel', channel);
+      console.log('channel', '');
       if (message) {
         await message.edit({
           embeds: [embed],
@@ -112,7 +112,7 @@ export class TimerBossService {
     const intervalId = setInterval(async () => {
       if (remainingTime > 0) {
         message = await updateMessage();
-        console.log('channel', channel);
+        console.log('channel', '');
         remainingTime--;
       } else {
         clearInterval(intervalId);
