@@ -71,13 +71,22 @@ export class TimerBossService {
     return this.bossTimers;
   }
 
-  async countDownBossTimers(channel: any, duration: any) {
+  async countDownBossTimers(channel: any, duration: number) {
     let remainingTime = duration;
+    let message: any = null;
+
+    const updateMessage = async () => {
+      const content = `⏳ Countdown: ${remainingTime} seconds remaining...`;
+      if (message) {
+        await message.edit(content);
+      } else {
+        message = await channel.send(content);
+      }
+    };
+
     const intervalId = setInterval(async () => {
       if (remainingTime > 0) {
-        await channel.send(
-          `⏳ Countdown: ${remainingTime} seconds remaining...`,
-        );
+        await updateMessage();
         remainingTime--;
       } else {
         clearInterval(intervalId);
