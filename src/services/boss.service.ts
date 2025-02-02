@@ -43,7 +43,7 @@ export class TimerBossService {
   async createTimerBoss(
     command: Command,
     channel: string,
-  ): Promise<BossTimer & { secondsRemaining: number }> {
+  ): Promise<BossTimer & { duration: number }> {
     const bossName = command.options.find(
       (option) => option.name === 'boss_name',
     )?.value as keyof typeof bossRespawnTimes;
@@ -63,8 +63,7 @@ export class TimerBossService {
       bossName,
       time,
       channel,
-      secondsRemaining:
-        Date.now() / 1000 + (duration || bossRespawnTimes[bossName]) / 1000,
+      duration: duration || bossRespawnTimes[bossName],
     };
   }
 

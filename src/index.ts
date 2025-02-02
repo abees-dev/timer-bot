@@ -84,7 +84,7 @@ const bootstrap = async () => {
         const bossService = TimerBossService.getInstance();
         const timerBoss = await bossService.createTimerBoss(data, channel_id);
 
-        countdownTimer(channel, timerBoss.secondsRemaining); // Start 10-second countdown
+        countdownTimer(channel, timerBoss.duration); // Start 10-second countdown
 
         res.status(200).json({
           type: InteractionResponseType.CHANNEL_MESSAGE_WITH_SOURCE,
