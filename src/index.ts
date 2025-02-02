@@ -70,6 +70,8 @@ const bootstrap = async () => {
         let channel;
         try {
           channel = await discordClient.channels.fetch(channel_id);
+
+          console.log('channel', channel);
         } catch (err) {
           console.error('Error fetching channel:', err);
           res.status(500).json({
