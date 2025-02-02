@@ -62,7 +62,6 @@ const bootstrap = async () => {
     verifyKeyMiddleware(process.env.CLIENT_PUBLIC_KEY as string),
     async (req, res) => {
       const { type, id, data, channel_id } = req.body;
-      console.log('Received interaction', JSON.stringify(data, null, 2));
 
       // Get the 'boss' interaction
       if (data.name === 'boss') {
