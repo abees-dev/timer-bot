@@ -1,3 +1,5 @@
+import { EmbedBuilder } from 'discord.js';
+
 interface BossTimer {
   bossName: string;
   time: number;
@@ -71,17 +73,32 @@ export class TimerBossService {
     return this.bossTimers;
   }
 
-  async countDownBossTimers(channel: any, duration: number) {
+  async countDownBossTimers(channel: any, duration: number, bossName: string) {
     let remainingTime = duration;
     let message: any = null;
 
     const updateMessage = async () => {
-      const content = `⏳ Countdown: ${remainingTime} seconds remaining...`;
+      const hours = Math.floor(remainingTime / 3600);
+      const minutes = Math.floor((remainingTime % 3600) / 60);
+      const seconds = remainingTime % 60;
+      const formattedTime = `${hours.toString().padStart(2, '0')}:${minutes
+        .toString()
+        .padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
+
+      const embed = new EmbedBuilder()
+        .setTitle(`⏳ Boss ${bossName} Respawn Timer`)
+        .setDescription(`Time remaining: **${formattedTime}**`)
+        .setColor(0x00ff00);
+
       console.log('channel', channel);
       if (message) {
-        await message.edit(content);
+        await message.edit({
+          embeds: [embed],
+        });
       } else {
-        message = await channel.send(content);
+        message = await channel.send({
+          embeds: [embed],
+        });
       }
     };
 
@@ -92,7 +109,11 @@ export class TimerBossService {
         remainingTime--;
       } else {
         clearInterval(intervalId);
-        await channel.send("🚀 Time's up!");
+        const embed = new EmbedBuilder()
+          .setTitle(`⏳ Boss ${bossName} Respawn Timer`)
+          .setDescription(`Boss ${bossName} has respawned! 🎉`)
+          .setColor(0xff0000);
+        await channel.send({ embeds: [embed] });
       }
     }, 1000);
   }
