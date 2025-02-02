@@ -22,6 +22,8 @@ async function countdownTimer(channel: any, seconds: any) {
     `⏳ Countdown: ${seconds} seconds remaining...`,
   );
 
+  console.log(channel);
+
   for (let i = seconds; i > 0; i--) {
     await new Promise((resolve) => setTimeout(resolve, 1000)); // Wait 1 second
     await message.edit(`⏳ Countdown: ${i} seconds remaining...`);
