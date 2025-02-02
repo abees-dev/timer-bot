@@ -110,7 +110,6 @@ export class TimerBossService {
     };
 
     const intervalId = setInterval(async () => {
-      let message: any = null;
       if (remainingTime > 0) {
         message = await updateMessage();
         console.log('channel', channel);
@@ -122,7 +121,9 @@ export class TimerBossService {
         }
         const embed = new EmbedBuilder()
           .setTitle(`⏳ Boss ${mappedBossName[bossName]} Respawn Timer`)
-          .setDescription(`Boss ${mappedBossName[bossName]} has respawned! 🎉`)
+          .setDescription(
+            `Boss ${mappedBossName[bossName]} has respawned! 🎉 @everyone`,
+          )
           .setColor(0xff0000);
         await channel.send({ embeds: [embed] });
       }
